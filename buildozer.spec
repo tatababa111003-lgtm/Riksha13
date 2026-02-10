@@ -1,5 +1,4 @@
-﻿[app]
-
+[app]
 # (1) অ্যাপের নাম ও টাইটেল
 title = Dhaka13 App
 package.name = dhaka13
