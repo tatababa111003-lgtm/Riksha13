@@ -1,42 +1,44 @@
-name: Build APK
+[app]
 
-on:
-  push:
-    branches: [ "main" ]
+# (1) অ্যাপের নাম ও টাইটেল
+title = Dhaka13 App
+package.name = dhaka13
+package.domain = org.tata
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# (2) সোর্স ফাইল এবং এক্সটেনশন (সবচেয়ে জরুরি লাইন)
+# zip এবং ui ফাইলগুলো যাতে মিস না হয়
+source.dir = .
+source.include_exts = py,png,jpg,ui,db,ttf,zip
 
-    steps:
-      - uses: actions/checkout@v3
+# (3) ভার্সন
+version = 0.1
 
-      # ১. পরিবেশ সেটআপ
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+# (4) রিকোয়ারমেন্টস (PyQt6 এর জন্য অপ্টিমাইজ করা)
+# 'sqlite3' বাদ দেওয়া হয়েছে কারণ ওটা python3 এর পেটের ভেতরেই থাকে
+requirements = python3,pyqt6
 
-      # ২. সিস্টেম টুলস এবং Buildozer ইন্সটল
-      - name: Install Buildozer and Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            python3-pip build-essential git python3 \
-            python3-dev ffmpeg libsdl2-dev libsdl2-image-dev \
-            libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev \
-            libswscale-dev libavformat-dev libavcodec-dev \
-            zlib1g-dev openjdk-17-jdk unzip
-          pip install --upgrade buildozer cython==0.29.33 virtualenv
+# (5) অ্যাপ ওরিয়েন্টেশন (পোট্রেট মোড)
+orientation = portrait
+fullscreen = 0
 
-      # ৩. APK তৈরি শুরু (Debug Mode)
-      - name: Build with Buildozer
-        run: |
-          yes | buildozer android debug
+# (6) আইকন
+icon.filename = %(source.dir)s/icon.png
 
-      # ৪. APK আপলোড করা (যাতে আপনি ডাউনলোড করতে পারেন)
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Dhaka13-App-APK
-          path: bin/*.apk
+# (7) অ্যান্ড্রয়েড পারমিশন
+android.permissions = INTERNET,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
+
+# (8) অ্যান্ড্রয়েড টেকনিক্যাল কনফিগারেশন (API 33 - Android 13)
+android.api = 33
+android.minapi = 24
+android.ndk_api = 21
+android.accept_sdk_license = True
+android.archs = arm64-v8a
+
+# (9) লোডিং স্ক্রিন কালার
+android.presplash_color = #f0f8ff
+
+[buildozer]
+
+# (10) লগ লেভেল
+log_level = 2
+warn_on_root = 1
